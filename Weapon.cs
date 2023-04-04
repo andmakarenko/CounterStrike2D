@@ -1,66 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-class Weapon
+interface IShootable
 {
-
-
-    public virtual void fire()
-    {
-    }
+    void Fire();
 }
 
-class AWP : Weapon
+
+class SRifle : IShootable
 {
     readonly int damage;
     readonly int range;
 
-    public AWP()
+    public SRifle()
     {
         damage = 200;
         range = 150;
     }
 
-    public override void fire()
+    public void Fire()
     {
-        //firing logic
+        
     }
 }
 
-class M4A1 : Weapon
+class AR : IShootable
 {
     readonly int damage;
     readonly int range;
 
-    public M4A1()
+    public AR()
     {
         damage = 40;
         range = 65;
     }
 
-    public override void fire()
+    public void Fire()
     {
-        //firing logic
+        
     }
 }
 
-class USP : Weapon
+class Pistol : IShootable
 {
     readonly int damage;
     readonly int range;
 
-    public USP()
+    public Pistol()
     {
         damage = 25;
         range = 15;
     }
 
-    public override void fire()
+    public void Fire()
     {
-        //firing logic
+        
     }
 }
 

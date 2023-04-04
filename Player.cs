@@ -1,89 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-class Player
+
+interface IMovable
+{
+    void Move();
+}
+
+
+class Player : IMovable
 { 
 
     public int X;
     public int Y;
 
-    Weapon weapon;
-
     public Player()
     {
-        X = 2;
-        Y = 2;
+        X = 3;
+        Y = 3;
     }
 
-    public Player(int choice)
+    public Player(int x, int y)
     {
-        X = 2;
-        Y = 2;
-
-        switch(choice)
-        {
-            case 1:
-                weapon = new USP();
-                break;
-            case 2:
-                weapon = new M4A1();
-                break;
-            case 3:
-                weapon = new AWP();
-                break;
-            default:
-                Console.WriteLine("Wrong weapon index.");
-                weapon = new Weapon();
-                break;
-        }
+        X = x;
+        Y = y;
     }
 
-    public void Walk(ConsoleKey key)
+    public void ShowIcon()
     {
-        if (key == ConsoleKey.W)
-        {
-            if (Level.IsWalkable(X, Y - 1))
-                Y--;
-        }
-        else if (key == ConsoleKey.A)
-        {
-            if (Level.IsWalkable(X - 1, Y))
-                X--;
-        }
-        else if (key == ConsoleKey.S)
-        {
-            if (Level.IsWalkable(X, Y + 1))
-                Y++;
-        }
-        else if (key == ConsoleKey.D)
-        {
-            if (Level.IsWalkable(X + 1, Y))
-                X++;
-        }
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.Write('@');
+        Console.ForegroundColor = ConsoleColor.Black;
     }
 
-    public void Shoot()
+    public void Move()
     {
 
+        ConsoleKey key;
+        while (true)
+        {
+            while (Console.KeyAvailable) // reading key and moving the player in corresponding direcion
+            {
+                key = Console.ReadKey(true).Key;
+
+                if (key == ConsoleKey.W)
+                {
+                    if (Level.IsWalkable(X, Y - 1))
+                        Y--;
+                }
+                else if (key == ConsoleKey.A)
+                {
+                    if (Level.IsWalkable(X - 1, Y))
+                        X--;
+                }
+                else if (key == ConsoleKey.S)
+                {
+                    if (Level.IsWalkable(X, Y + 1))
+                        Y++;
+                }
+                else if (key == ConsoleKey.D)
+                {
+                    if (Level.IsWalkable(X + 1, Y))
+                        X++;
+                }
+            }
+        }
     }
 
-    //public bool EnemyVisible()
+
+
+    //public void Shoot()
     //{
-    //    foreach ()
+    //    context.DefineStrategy(Level.Map, (Y, X), Enemy.coords);
+    //
+    //    if (context.IsVisible())
+    //    {
+    //        Enemy.IsAlive = false;
+    //    }
     //}
-    //
-    //private bool Find(Enemy enemy)
-    //{
-    //    for (int y = Y, x = X;)
-    //
-    //
-    //
-    //    return false;
-    //}
+    
 }
 
     

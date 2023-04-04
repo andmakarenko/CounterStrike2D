@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MousePos.cs" />
+    <Compile Include="ShortestPathFinder.cs" />
     <Compile Include="Weapon.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Map.cs" />

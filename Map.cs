@@ -3,14 +3,15 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 class Level
 {
+    //
     public static char[,] Map = new char[,]
     {
-        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#' },
+       {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#' },
         {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#' },
         {'#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ','#', '#' },
         {'#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ','#', '#' },
@@ -40,85 +41,73 @@ class Level
     };
 
 
-    const int ENEMY_MAX = 5;
-    static readonly int ENEMY;
 
-
+    public Enemy enemy;
     public Player player;
-    List<Enemy> enemies;
-
+    
     public Level()
     {
         player = new Player();
+        enemy = new Enemy(player);
     }
 
-    public void ShowMap()
+    public void ShowMap() // map output
     {
         Console.ForegroundColor = ConsoleColor.Black;
-        for (int y = 0; y < Map.GetLength(0); y++)
+        while (true)
         {
-            for (int x = 0; x < Map.GetLength(1); x++)
+            Console.SetCursorPosition(0, 0);
+            for (int y = 0; y < Map.GetLength(0); y++)
             {
-                if (player.X == x && player.Y == y)
+                for (int x = 0; x < Map.GetLength(1); x++)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write('@');
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    if (player.X == x && player.Y == y)
+                    {
+                        player.ShowIcon();
+                    }
+                    else if (enemy.Y == y && enemy.X == x)
+                    {
+                        enemy.ShowIcon();
+                    }
+                    else
+                        Console.Write(Map[y, x]);
                 }
-                else
-                    Console.Write(Map[y, x]);
+                Console.WriteLine();
             }
-            Console.WriteLine();
         }
+        
     }
 
+    // checking whether the next cell is avaliable
     public static bool IsWalkable(int x, int y)
     {
         return Map[y, x] == ' ';
     }
 
+    // loop which is responsible for the playing process
     public void Play()
     {
         Console.CursorVisible = false;
+        Thread showMap = new Thread(ShowMap);
+        Thread playermove = new Thread(player.Move);
+        Thread enemyMove = new Thread(enemy.Move);
 
-        while (true)
-        {
-            // Выводим карту и игрока
-            Console.SetCursorPosition(0, 0);
-            ShowMap();
+        //Thread shoot = new Thread(player.Shoot);
 
-            // Ждем нажатия клавиши и перемещаем игрока
-            //while (Console.KeyAvailable)
-            //{
-            //    ConsoleKey key = Console.ReadKey(true).Key;
-            //    switch (key)
-            //    {
-            //        case ConsoleKey.W:
-            //            if (IsWalkable(player.X, player.Y - 1))
-            //                player.Y--;
-            //            break;
-            //        case ConsoleKey.A:
-            //            if (IsWalkable(player.X - 1, player.Y))
-            //                player.X--;
-            //            break;
-            //        case ConsoleKey.S:
-            //            if (IsWalkable(player.X, player.Y + 1))
-            //                player.Y++;
-            //            break;
-            //        case ConsoleKey.D:
-            //            if (IsWalkable(player.X + 1, player.Y))
-            //                player.X++;
-            //            break;
-            //    }
-            //}
+        showMap.Start();
+        playermove.Start();
+        enemyMove.Start();
+        //shoot.Start();
 
-            while (Console.KeyAvailable)
-            {
-                player.Walk(Console.ReadKey(true).Key);
-            }
-
-
-        }
+        //while (true)
+        //{
+        //    Console.SetCursorPosition(0, 0); // player and map output
+        //    ShowMap();
+        //
+        //    player.Move();
+        //
+        //
+        //}
     }
 
 }
