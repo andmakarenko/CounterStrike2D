@@ -9,8 +9,6 @@ using System.Windows.Forms;
 
 namespace CounterStrike2D
 {
-
-
     internal class Program
     { 
 

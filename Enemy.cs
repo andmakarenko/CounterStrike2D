@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -30,8 +31,8 @@ class Enemy : IMovable
     {
         var finder = new ShortestPathFinder(Level.Map);
         List<Tuple<int, int>> path = new List<Tuple<int, int>>();
-
-
+        
+        
         while (true)
         {
             Tuple<int, int> Enemy = new Tuple<int, int>(Y, X);
@@ -39,20 +40,21 @@ class Enemy : IMovable
         
         
             path = finder.FindShortestPath(Enemy, Player);
-
-
+        
+        
             foreach (var pathItem in path)
             {
-                if (!IsVisible(Level.Map, (Y, X), (player.Y, player.X)))
+                if (!IsVisible(Level.Map, (Y, X), (player.Y, player.X)) && Level.IsWalkable(pathItem.Item2 , pathItem.Item1))
                 {
-                    Y += pathItem.Item1 - Y;
-                    X += pathItem.Item2 - X;
+                    Y = pathItem.Item1;
+                    X = pathItem.Item2;
+                    Level.Map[Y, X] = '$';
                     Thread.Sleep(100);
                 }
             }
+
             
         }
-
 
         //Random rand = new Random();
         //int x;
@@ -101,7 +103,7 @@ class Enemy : IMovable
         var Fov = Math.PI * 2;
         int playerX = player.Item2;
         int playerY = player.Item1;
-        int depth = 28;
+        int depth = 15;
 
         for (int x = 0; x < screenWidth; x++)
         {

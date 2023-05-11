@@ -92,22 +92,9 @@ class Level
         Thread playermove = new Thread(player.Move);
         Thread enemyMove = new Thread(enemy.Move);
 
-        //Thread shoot = new Thread(player.Shoot);
-
         showMap.Start();
         playermove.Start();
         enemyMove.Start();
-        //shoot.Start();
-
-        //while (true)
-        //{
-        //    Console.SetCursorPosition(0, 0); // player and map output
-        //    ShowMap();
-        //
-        //    player.Move();
-        //
-        //
-        //}
     }
 
 }

@@ -71,18 +71,6 @@ class Player : IMovable
             }
         }
     }
-
-
-
-    //public void Shoot()
-    //{
-    //    context.DefineStrategy(Level.Map, (Y, X), Enemy.coords);
-    //
-    //    if (context.IsVisible())
-    //    {
-    //        Enemy.IsAlive = false;
-    //    }
-    //}
     
 }
 
